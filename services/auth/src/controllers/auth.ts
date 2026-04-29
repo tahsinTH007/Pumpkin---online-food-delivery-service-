@@ -1,13 +1,31 @@
 import jwt from "jsonwebtoken";
+import axios from "axios";
 import User from "../models/user.js";
 import { TryCatch } from "../middlewares/tryCatch.js";
 import { AuthenticatedRequest } from "../middlewares/isAuth.js";
+import { oAuth2Client } from "../config/googleConfig.js";
 
 const allowedRoles = ["customer", "rider", "seller"] as const;
 type Role = (typeof allowedRoles)[number];
 
 export const loginUser = TryCatch(async (req, res) => {
-  const { email, name, picture } = req.body;
+  const { code } = req.body;
+
+  if (!code) {
+    res.status(400).json({
+      message: "Authorization code is required",
+    });
+  }
+
+  const googleRes = await oAuth2Client.getToken(code);
+
+  oAuth2Client.setCredentials(googleRes.tokens);
+
+  const userRes = await axios.get(
+    `https://www.googleapis.com/oauth2/v1/userinfo?alt=json$access_token=${googleRes.tokens.access_token}`,
+  );
+
+  const { email, name, picture } = userRes.data;
 
   let user = await User.findOne({ email });
 
@@ -63,6 +81,13 @@ export const addUserRole = TryCatch(async (req: AuthenticatedRequest, res) => {
 
   res.status(200).json({
     token,
+    user,
+  });
+});
+
+export const myProfile = TryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
+  res.json({
     user,
   });
 });
