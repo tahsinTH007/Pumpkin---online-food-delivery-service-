@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 
@@ -10,6 +12,7 @@ export const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
         </Routes>
+        <Toaster />
       </BrowserRouter>
     </>
   );
