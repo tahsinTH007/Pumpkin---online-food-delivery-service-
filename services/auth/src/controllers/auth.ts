@@ -10,7 +10,6 @@ type Role = (typeof allowedRoles)[number];
 
 export const loginUser = TryCatch(async (req, res) => {
   const { code } = req.body;
-  console.log("hi");
 
   if (!code) {
     res.status(400).json({
@@ -18,25 +17,17 @@ export const loginUser = TryCatch(async (req, res) => {
     });
   }
 
-  console.log("hi2");
-
   const googleRes = await oAuth2Client.getToken(code);
 
   oAuth2Client.setCredentials(googleRes.tokens);
-
-  console.log("hi3");
 
   const userRes = await axios.get(
     `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`,
   );
 
-  console.log(userRes);
-
   const { email, name, picture } = userRes.data;
 
   let user = await User.findOne({ email });
-
-  console.log("hi4");
 
   if (!user) {
     user = await User.create({
