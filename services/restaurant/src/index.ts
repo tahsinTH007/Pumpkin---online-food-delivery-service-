@@ -16,5 +16,5 @@ app.use(express.json());
 const port = process.env.PORT || 5001;
 
 app.listen(port, () => {
-  console.log(`Auth service is running on port ${port}`);
+  console.log(`Restaurant service is running on port ${port}`);
 });
