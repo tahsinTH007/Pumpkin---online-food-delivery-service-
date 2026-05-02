@@ -9,8 +9,24 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SelectRole from "./pages/SelectRole";
 import Account from "./pages/Account";
+import { useAppData } from "./context/useAppData";
+import Restaurant from "./pages/Restaurant";
 
 export const App = () => {
+  const { user, loading } = useAppData();
+
+  if (loading) {
+    return (
+      <h1 className="text-2xl font-bold text-red-500 text-center mt-56">
+        Loading...
+      </h1>
+    );
+  }
+
+  if (user && user.role === "seller") {
+    return <Restaurant />;
+  }
+
   return (
     <>
       <BrowserRouter>
