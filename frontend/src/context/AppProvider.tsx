@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { authServices } from "../main";
 import type { LocationData, User } from "../types";
 import { AppContext } from "./AppContext";
+import { Toaster } from "react-hot-toast";
 
 interface AppProviderProps {
   children: ReactNode;
@@ -98,10 +99,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         setLoading,
         city,
         location,
-        loadingLocation
+        loadingLocation,
       }}
     >
       {children}
+      <Toaster />
     </AppContext.Provider>
   );
 };

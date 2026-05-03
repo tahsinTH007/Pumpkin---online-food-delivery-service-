@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/navbar";
 import ProtectedRoute from "./components/protectedRote";
 import PublicRoute from "./components/publicRoute";
 
+import { useAppData } from "./context/useAppData";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SelectRole from "./pages/SelectRole";
 import Account from "./pages/Account";
-import { useAppData } from "./context/useAppData";
 import Restaurant from "./pages/Restaurant";
 
 export const App = () => {
@@ -41,7 +41,6 @@ export const App = () => {
             <Route path="/account" element={<Account />} />
           </Route>
         </Routes>
-        <Toaster />
       </BrowserRouter>
     </>
   );
