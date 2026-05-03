@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import type { IMenuItem, IRestaurant } from "../types";
 import { restaurantService } from "../main";
+
+import type { IMenuItem, IRestaurant } from "../types";
+
 import AddRestaurant from "../components/AddRestaurant";
 import RestaurantProfile from "../components/RestaurantProfile";
+import MenuItems from "../components/MenuItems";
+import AddMenuItem from "../components/AddMenuItem";
 
 type SellerTab = "menu" | "add-item" | "sales";
 
@@ -108,7 +112,7 @@ const Restaurant = () => {
           ))}
         </div>
 
-        {/* <div className="p-5">
+        <div className="p-5">
           {tab === "menu" && (
             <MenuItems
               items={menuItems}
@@ -120,7 +124,7 @@ const Restaurant = () => {
             <AddMenuItem onItemAdded={() => fetchMenuItems(restaurant._id)} />
           )}
           {tab === "sales" && <p>Sales Page</p>}
-        </div> */}
+        </div>
       </div>
     </div>
   );

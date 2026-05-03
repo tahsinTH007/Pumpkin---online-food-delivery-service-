@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
+
 import { CgShoppingCart } from "react-icons/cg";
 import { BiMapPin, BiSearch } from "react-icons/bi";
 

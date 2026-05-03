@@ -1,10 +1,16 @@
 import { useState } from "react";
-import type { IRestaurant } from "../types";
 import axios from "axios";
-import { restaurantService } from "../main";
+
 import toast from "react-hot-toast";
+
 import { BiEdit, BiMapPin, BiSave } from "react-icons/bi";
+
+import { restaurantService } from "../main";
+
 import { useAppData } from "../context/useAppData";
+
+import type { IRestaurant } from "../types";
+
 
 interface props {
   restaurant: IRestaurant;

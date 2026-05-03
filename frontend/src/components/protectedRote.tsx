@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+
 import { useAppData } from "../context/useAppData";
 
 const ProtectedRoute = () => {
