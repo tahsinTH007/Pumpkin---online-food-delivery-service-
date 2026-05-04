@@ -40,9 +40,14 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   // }
 
   useEffect(() => {
-    async function fetchUser() {
+    const loadUser = async () => {
       try {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
 
         const { data } = await axios.get(`${authServices}/api/auth/me`, {
           headers: {
@@ -50,15 +55,16 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           },
         });
 
-        setUser(data);
+        setUser(data.user);
         setIsAuth(true);
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
-    }
-    fetchUser();
+    };
+
+    loadUser();
   }, []);
 
   // useEffect(() => {

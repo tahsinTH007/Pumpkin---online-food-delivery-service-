@@ -90,6 +90,7 @@ const MenuItems = ({ items, onItemDeleted, isSeller }: MenuItemsProps) => {
       setLoadingItemId(null);
     }
   };
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {items.map((item) => {
@@ -128,7 +129,7 @@ const MenuItems = ({ items, onItemDeleted, isSeller }: MenuItemsProps) => {
               </div>
 
               <div className="flex items-center justify-between ">
-                <p className="font-medium">₹{item.price}</p>
+                <p className="font-medium">TK:{item.price}</p>
 
                 {isSeller && (
                   <div className="flex gap-2">

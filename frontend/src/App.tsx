@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import SelectRole from "./pages/SelectRole";
 import Account from "./pages/Account";
 import Restaurant from "./pages/Restaurant";
+import RestaurantPage from "./pages/RestaurantPage";
 
 export const App = () => {
   const { user, loading } = useAppData();
@@ -37,6 +38,7 @@ export const App = () => {
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
+            <Route path="/restaurant/:id" element={<RestaurantPage />} />
             <Route path="/select-role" element={<SelectRole />} />
             <Route path="/account" element={<Account />} />
           </Route>
