@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState, type ReactNode } from "react";
-import { authServices } from "../main";
-import type { LocationData, User } from "../types";
+import { authServices, restaurantService } from "../main";
+import type { ICart, LocationData, User } from "../types";
 import { AppContext } from "./AppContext";
 import { Toaster } from "react-hot-toast";
 
@@ -17,27 +17,6 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [city, setCity] = useState("Fetching Location...");
-
-  // const [cart, setCart] = useState<ICart[]>([]);
-  // const [subTotal, setSubTotal] = useState(0);
-  // const [quantity, setQuantity] = useState(0);
-
-  // async function fetchCart() {
-  //   if (!user || user.role !== "customer") return;
-  //   try {
-  //     const { data } = await axios.get(`${restaurantService}/api/cart/all`, {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     });
-
-  //     setCart(data.cart || []);
-  //     setSubTotal(data.subtotal || 0);
-  //     setQuantity(data.cartLength);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   useEffect(() => {
     const loadUser = async () => {
@@ -67,11 +46,32 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     loadUser();
   }, []);
 
-  // useEffect(() => {
-  //   if (user && user.role === "customer") {
-  //     fetchCart();
-  //   }
-  // }, [user]);
+  const [cart, setCart] = useState<ICart[]>([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+
+  async function fetchCart() {
+    if (!user || user.role !== "customer") return;
+    try {
+      const { data } = await axios.get(`${restaurantService}/api/cart/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      setCart(data.cart || []);
+      setSubTotal(data.subtotal || 0);
+      setQuantity(data.cartLength);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (user && user.role === "customer") {
+      fetchCart();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!navigator.geolocation)
@@ -127,10 +127,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         city,
         location,
         loadingLocation,
-        // cart,
-        // fetchCart,
-        // quantity,
-        // subTotal,
+        cart,
+        fetchCart,
+        quantity,
+        subTotal,
       }}
     >
       {children}
