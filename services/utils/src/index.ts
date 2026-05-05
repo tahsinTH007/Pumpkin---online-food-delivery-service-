@@ -7,7 +7,12 @@ import cloudinary from "cloudinary";
 
 import uploadRoutes from "./routes/cloudinary.js";
 
+import { connectRabbitMQ } from "./config/rabbitmq.js";
+
+
 const app = express();
+
+connectRabbitMQ();
 
 app.use(cors());
 

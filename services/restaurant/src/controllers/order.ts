@@ -3,6 +3,7 @@ import { TryCatch } from "../middlewares/tryCatch.js";
 
 import Address from "../models/Address.js";
 import Cart from "../models/Cart.js";
+import Order from "../models/Order.js";
 
 import { IMenuItem } from "../models/MenuItems.js";
 import Restaurant, { IRestaurant } from "../models/Restaurant.js";
@@ -33,6 +34,27 @@ export const createOrder = TryCatch(async (req: AuthenticatedRequest, res) => {
       message: "Address Not found",
     });
   }
+
+  const getDistanceKm = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number,
+  ): number => {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return +(R * c).toFixed(2);
+  };
 
   const cartItems = await Cart.find({ userId: user._id })
     .populate<{ itemId: IMenuItem }>("itemId")
@@ -66,6 +88,13 @@ export const createOrder = TryCatch(async (req: AuthenticatedRequest, res) => {
     });
   }
 
+  const distance = getDistanceKm(
+    address.location.coordinates[1],
+    address.location.coordinates[0],
+    restaurant.autoLocation.coordinates[1],
+    restaurant.autoLocation.coordinates[0],
+  );
+
   let subtotal = 0;
 
   const orderItems = cartItems.map((cart) => {
@@ -92,4 +121,70 @@ export const createOrder = TryCatch(async (req: AuthenticatedRequest, res) => {
   const totalAmount = subtotal + deliveryFee + platFromFee;
 
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+  const [longitude, latitude] = address.location.coordinates;
+
+  const riderAmount = Math.ceil(distance) * 17;
+
+  const order = await Order.create({
+    userId: user._id.toString(),
+    restaurantId: restaurantId.toString(),
+    restaurantName: restaurant.name,
+    riderId: null,
+    distance,
+    riderAmount,
+    items: orderItems,
+    subtotal,
+    deliveryFee,
+    platFromFee,
+    totalAmount,
+    addressId: address._id.toString(),
+    deliveryAddress: {
+      formattedAddress: address.formattedAddress,
+      mobile: address.mobile,
+      latitude,
+      longitude,
+    },
+
+    paymentMethod,
+    paymentStatus: "pending",
+    status: "placed",
+    expiresAt,
+  });
+
+  await Cart.deleteMany({ userId: user._id });
+
+  res.json({
+    message: "Order created successfully",
+    orderId: order._id.toString(),
+    amount: totalAmount,
+  });
+});
+
+export const fetchOrderForPayment = TryCatch(async (req, res) => {
+  if (req.headers["x-internal-key"] !== process.env.INTERNAL_SERVICE_KEY) {
+    return res.status(403).json({
+      message: "Forbidden",
+    });
+  }
+
+  const order = await Order.findById(req.params.id);
+
+  if (!order) {
+    return res.status(404).json({
+      message: "Order not found",
+    });
+  }
+
+  if (order.paymentStatus !== "pending") {
+    return res.status(400).json({
+      message: "Order already paid",
+    });
+  }
+
+  res.json({
+    orderId: order._id,
+    amount: order.totalAmount,
+    currency: "BDT",
+  });
 });
