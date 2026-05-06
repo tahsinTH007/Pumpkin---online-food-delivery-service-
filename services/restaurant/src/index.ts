@@ -11,8 +11,13 @@ import itemRoutes from "./routes/menuitem.js";
 import cartRoutes from "./routes/cart.js";
 import addressRoutes from "./routes/address.js";
 import orderRoutes from "./routes/order.js";
+import { connectRabbitMQ } from "./config/rabbitmq.js";
+import { startPaymentConsumer } from "./config/payment.consumer.js";
 
 await connectDB();
+
+await connectRabbitMQ();
+startPaymentConsumer();
 
 const app = express();
 

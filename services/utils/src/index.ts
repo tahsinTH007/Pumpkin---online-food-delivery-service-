@@ -12,7 +12,7 @@ import { connectRabbitMQ } from "./config/rabbitmq.js";
 
 const app = express();
 
-connectRabbitMQ();
+await connectRabbitMQ();
 
 app.use(cors());
 
