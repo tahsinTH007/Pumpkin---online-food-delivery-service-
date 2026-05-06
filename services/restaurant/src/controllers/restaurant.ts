@@ -183,7 +183,6 @@ export const updateRestaurant = TryCatch(
 
 export const getNearbyRestaurant = TryCatch(async (req, res) => {
   const { latitude, longitude, radius = 30000, search = "" } = req.query;
-  console.log(latitude, longitude, radius);
 
   if (!latitude || !longitude) {
     return res.status(400).json({
