@@ -156,7 +156,7 @@ const Checkout = () => {
     }
   };
 
-  const stripePromise = loadStripe('pk_test_51TU7L6GmEdJnhNUeZnyGHaPYi5O7NGBeblWkqhB3OqFjLGPZDQnHOue8GG43Y1trSeA4niJdfRpXNyAox29ELFmd00MJIlDW42');
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
   const payWithStripe = async () => {
     try {

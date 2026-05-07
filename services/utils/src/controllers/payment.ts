@@ -68,7 +68,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export const payWithStripe = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { orderId } = req.body;
 
     const { data } = await axios.get(
@@ -87,7 +86,7 @@ export const payWithStripe = async (req: Request, res: Response) => {
       line_items: [
         {
           price_data: {
-            currency: "inr",
+            currency: "usd",
             product_data: {
               name: "Tomato food order",
             },
@@ -109,7 +108,6 @@ export const payWithStripe = async (req: Request, res: Response) => {
       url: session.url,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: "stripe payment failed",
     });
