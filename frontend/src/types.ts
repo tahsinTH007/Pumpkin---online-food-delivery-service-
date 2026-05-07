@@ -90,7 +90,7 @@ export interface IOrder {
 
   subtotal: number;
   deliveryFee: number;
-  platformFee: number;
+  platFromFee: number;
   totalAmount: number;
 
   addressId: string;
