@@ -1,19 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { riderService } from "../main";
 import toast from "react-hot-toast";
 import { BiUpload } from "react-icons/bi";
-
-import { riderService } from "../main";
-
 import type { IOrder } from "../types";
-
 import audio from "../assets/faaah.mp3";
-
-import { useAppData } from "../context/useAppData";
-import { useSocket } from "../context/useSocket";
 import RiderOrderRequest from "../components/RiderOrderRequest";
 import RiderCurrentOrder from "../components/RiderCurrentOrder";
 import RiderOrderMap from "../components/RiderOrderMap";
+import { useAppData } from "../context/useAppData";
+import { useSocket } from "../context/useSocket";
 
 interface IRider {
   _id: string;
@@ -53,7 +49,7 @@ const RiderDashboard = () => {
       audioRef.current.currentTime = 0;
       setAudioUnlocked(true);
       toast.success("Sound Enabled");
-    } catch {
+    } catch (error) {
       toast.error("Tap again to enable sound");
     }
   };
@@ -92,7 +88,7 @@ const RiderDashboard = () => {
       });
 
       setProfile(data || null);
-    } catch {
+    } catch (error) {
       setProfile(null);
     } finally {
       setLoading(false);
@@ -126,7 +122,7 @@ const RiderDashboard = () => {
     fetchCurrentOrder();
   }, []);
 
-  const toggleAvailability = async () => {
+  const toggleAvailiblity = async () => {
     if (!navigator.geolocation) {
       toast.error("Location Access Required");
       return;
@@ -202,12 +198,8 @@ const RiderDashboard = () => {
 
         toast.success(data.message);
         fetchProfile();
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data?.message || "API Error");
-        } else {
-          toast.error("Unexpected error occurred");
-        }
+      } catch (error: any) {
+        toast.error(error.response.data.message);
       } finally {
         setSubmitting(false);
       }
@@ -237,7 +229,7 @@ const RiderDashboard = () => {
           <h1 className="text-xl font-semibold">Add Your Profile</h1>
           <input
             type="number"
-            placeholder="NID number"
+            placeholder="Aadhar number"
             value={aadharNumber}
             onChange={(e) => setaadharNumber(e.target.value)}
             className="w-full rounded-lg border px-4 py-2 text-sm outline-none"
@@ -306,13 +298,13 @@ const RiderDashboard = () => {
           <div>
             <p className="text-blue-400">
               Please be within a 500 m radius of any restaurant (which we call a
-              hotpot) before going online as a rider to receive orders.
+              hotspot) before going online as a rider to receive orders.
             </p>
           </div>
 
           {profile.isVerified && !currentOrder && (
             <button
-              onClick={toggleAvailability}
+              onClick={toggleAvailiblity}
               disabled={toggling}
               className={`w-full py-2 rounded-lg text-white font-semibold ${
                 toggling
