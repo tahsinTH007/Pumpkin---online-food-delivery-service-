@@ -10,6 +10,7 @@ import { TryCatch } from "../middlewares/tryCatch.js";
 export const addRiderProfile = TryCatch(
   async (req: AuthenticatedRequest, res) => {
     const user = req.user;
+    console.log(user);
 
     if (!user) {
       return res.status(401).json({

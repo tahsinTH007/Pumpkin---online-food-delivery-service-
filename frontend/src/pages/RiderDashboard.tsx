@@ -202,8 +202,12 @@ const RiderDashboard = () => {
 
         toast.success(data.message);
         fetchProfile();
-      } catch (error: any) {
-        toast.error(error.response.data.message);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data?.message || "API Error");
+        } else {
+          toast.error("Unexpected error occurred");
+        }
       } finally {
         setSubmitting(false);
       }
