@@ -1,16 +1,17 @@
-import mongoose from "mongoose";
-import dns from "node:dns/promises";
+import { MongoClient, Db } from "mongodb";
 
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+let client: MongoClient;
+let db: Db;
 
-export const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI as string, {
-      dbName: "pumpkin-online-food-delivery",
-    });
-    console.log("MongoDB connected successfully");
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
+export const connectDb = async (): Promise<Db> => {
+  if (db) return db;
+
+  client = new MongoClient(process.env.MONGO_URI!);
+  await client.connect();
+
+  db = client.db(process.env.DB_NAME);
+
+  console.log("Admin service connected to mongodb");
+
+  return db;
 };
